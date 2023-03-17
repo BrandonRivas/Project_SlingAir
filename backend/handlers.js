@@ -89,12 +89,12 @@ const getReservations = async (request, response) => {
 // returns a single reservation
 const getSingleReservation = async (request, response) => {
   const client = new MongoClient(MONGO_URI, options);
-  const { _id } = request.params.reservation;
+  const _id = request.params.reservation;
 
   try {
     await client.connect();
     const db = client.db("Slingair");
-    const result = await db.collection("reservations").findOne(_id);
+    const result = await db.collection("reservations").findOne({ _id });
 
     result
       ? response.status(200).json({ status: 200, data: result })
@@ -121,7 +121,8 @@ const addReservation = async (request, response) => {
     await client.connect();
     const db = client.db("Slingair");
 
-    const result = await client.db("Slingair")
+    const result = await client
+      .db("Slingair")
       .collection("flights")
       .findOne({ _id: selectedFlight, "seats.id": selectedSeat });
 
@@ -172,8 +173,92 @@ const addReservation = async (request, response) => {
 };
 
 // updates a specified reservation
-const updateReservation = (request, response) => {};
+const updateReservation = async (request, response) => {
+  const _id = request.params.reservation;
+  const client = new MongoClient(MONGO_URI, options);
+  const db = client.db("Slingair");
 
+  try {
+    await client.connect();
+    const reservation = await db.collection("reservations").findOne({ _id });
+    if (!reservation) {
+      return response
+        .status(404)
+        .json({ status: 404, message: "Reservation not found" });
+    }
+    const updateObj = {};
+    if (request.body.givenName) {
+      updateObj.givenName = request.body.givenName;
+    }
+    if (request.body.surname) {
+      updateObj.surname = request.body.surname;
+    }
+    if (request.body.email) {
+      updateObj.email = request.body.email;
+    }
+    if (request.body.selectedFlight) {
+      updateObj.flight = request.body.selectedFlight;
+    }
+    if (request.body.selectedSeat) {
+      updateObj.seat = request.body.selectedSeat.toUpperCase();
+      
+
+      const query_flight = {
+        _id: request.body.selectedFlight,
+        flight: request.body.selectedFlight,
+        seats: {
+          $elemMatch: {
+            id: request.body.selectedSeat.toUpperCase(),
+            isAvailable: true,
+          },
+        },
+      };
+      const updateFlight = { $set: { "seats.$.isAvailable": false } };
+      const patch_flight = await db
+        .collection("flights")
+        .updateOne(query_flight, updateFlight);
+      if (patch_flight.modifiedCount === 0) {
+        return response.status(400).json({
+          status: 400,
+          message: "error reserving new flight, already booked",
+        });
+      }
+
+      const query_old_flight = {
+        _id: reservation.flight,
+        flight: reservation.flight,
+        seats: {
+          $elemMatch: {
+            id: reservation.seat,
+            isAvailable: false,
+          },
+        },
+      };
+      const updateNewFlight = { $set: { "seats.$.isAvailable": true } };
+      const patch_new_flight = await db
+        .collection("flights")
+        .updateOne(query_old_flight, updateNewFlight);
+      if (patch_new_flight.modifiedCount === 0) {
+        return response.status(400).json({
+          status: 400,
+          message: "error reserving new flight, already booked",
+        });
+      }
+    }
+
+    await db.collection("reservations").updateOne({ _id }, { $set: updateObj });
+
+    return response.status(200).json({
+      status: 200,
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
+    response.status(500).json({ message: error.message });
+  } finally {
+    client.close();
+  }
+};
 // deletes a specified reservation
 const deleteReservation = async (request, response) => {
   const _id = request.params.reservation;

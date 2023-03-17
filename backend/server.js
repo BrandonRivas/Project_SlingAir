@@ -35,7 +35,7 @@ express()
 
     .post("/api/add-reservation", addReservation)
 
-    .patch("/api/update-reservation", updateReservation)
+    .patch("/api/update-reservation/:reservation", updateReservation)
 
     .delete("/api/delete-reservation/:reservation", deleteReservation)
 
