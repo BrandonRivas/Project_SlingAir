@@ -29,7 +29,7 @@ const App = () => {
             <Main>
                 <Routes>
                     <Route path="/" element={<SeatSelect selectedFlight={selectedFlight} setReservationId={setReservationId} />} />
-                    <Route path="/confirmation" element={<Confirmation />} />
+                    <Route path="/confirmation/:_id" element={<Confirmation />} />
                     <Route path="/reservation" element={<Reservation />} />
                     <Route path="" element={<h1>404: Oops!</h1>} />
                 </Routes>

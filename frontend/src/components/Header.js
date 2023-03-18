@@ -19,7 +19,6 @@ const Header = ({ handleChange, reservationId }) => {
       });
   }, [setFlightNumbers]);
 
-  console.log(flightNumbers);
   return (
     <Wrapper>
       <Container>
@@ -33,8 +32,10 @@ const Header = ({ handleChange, reservationId }) => {
             {/* TODO: option for each flight number */}
             {flightNumbers.map((flight, index) => {
               return (
-                <option key={index} value={flight} onChange={handleChange}>{flight}</option>
-              )
+                <option key={index} value={flight} onChange={handleChange}>
+                  {flight}
+                </option>
+              );
             })}
           </Select>
         </label>
@@ -42,7 +43,9 @@ const Header = ({ handleChange, reservationId }) => {
       <Nav>
         <>
           {/* TODO: only show link if the user has a reservation already */}
-          <StyledNavLink to="/reservation">Reservation</StyledNavLink>
+          {reservationId && (
+            <StyledNavLink to="/reservation">Reservation</StyledNavLink>
+          )}
         </>
       </Nav>
     </Wrapper>

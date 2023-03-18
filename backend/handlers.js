@@ -29,7 +29,7 @@ const getFlights = async (request, response) => {
       return response.status(404).json({
         status: 404,
         data: result,
-        message: `Unable to retrieve list of flights.`,
+        message: `Unable to retrieve flights`,
       });
     }
   } catch (error) {
@@ -145,7 +145,7 @@ const addReservation = async (request, response) => {
         .json({ status: 400, message: "Selected seat is already reserved" });
     }
 
-    await db.collection("reservations").insertOne({
+    const data = await db.collection("reservations").insertOne({
       _id: uuidv4(),
       flight: selectedFlight,
       seat: selectedSeat,
@@ -163,7 +163,7 @@ const addReservation = async (request, response) => {
 
     return response
       .status(200)
-      .json({ status: 200, message: "Your booking has been created" });
+      .json({ status: 200, message: "Your booking has been created", data});
   } catch (error) {
     console.log(error);
     response.status(500).json({ message: "Internal server error" });
