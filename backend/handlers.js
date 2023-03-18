@@ -76,7 +76,7 @@ const getReservations = async (request, response) => {
       : response.status(404).json({
           status: 404,
           data: result,
-          message: "No reservations found",
+          message: "Could not find reservations",
         });
   } catch (error) {
     console.log(error);
@@ -136,13 +136,13 @@ const addReservation = async (request, response) => {
     if (!email.includes("@")) {
       return response
         .status(404)
-        .json({ status: 404, message: "This email is not possible!" });
+        .json({ status: 404, message: "Please provided a valid email" });
     }
 
     if (!result.seats.find((seats) => seats.id === selectedSeat).isAvailable) {
       return response
         .status(400)
-        .json({ status: 400, message: "Selected seat is already reserved" });
+        .json({ status: 400, message: "That selected seat is already reserved" });
     }
 
     const data = await db.collection("reservations").insertOne({
@@ -184,7 +184,7 @@ const updateReservation = async (request, response) => {
     if (!reservation) {
       return response
         .status(404)
-        .json({ status: 404, message: "Reservation not found" });
+        .json({ status: 404, message: "Reservation not found", data: reservation});
     }
     const updateObj = {};
     if (request.body.givenName) {
@@ -220,7 +220,7 @@ const updateReservation = async (request, response) => {
       if (patch_flight.modifiedCount === 0) {
         return response.status(400).json({
           status: 400,
-          message: "error reserving new flight, already booked",
+          message: "Sorry, that seat is already taken",
         });
       }
 
@@ -241,7 +241,7 @@ const updateReservation = async (request, response) => {
       if (patch_new_flight.modifiedCount === 0) {
         return response.status(400).json({
           status: 400,
-          message: "error reserving new flight, already booked",
+          message: "Sorry, that seat is already taken",
         });
       }
     }
@@ -250,6 +250,7 @@ const updateReservation = async (request, response) => {
 
     return response.status(200).json({
       status: 200,
+      message: "Your Booking was updated",
       success: true,
     });
   } catch (error) {
@@ -271,7 +272,7 @@ const deleteReservation = async (request, response) => {
     if (!result) {
       return response
         .status(404)
-        .json({ status: 404, message: "Reservation not found" });
+        .json({ status: 404, message: "Reservation not found", data: result });
     }
     const result2 = await db.collection("reservations").deleteOne({ _id });
     if (result2.deletedCount === 1) {

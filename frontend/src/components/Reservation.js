@@ -14,9 +14,9 @@ const Reservation = () => {
         setGuest(data);
       });
   }, [_id]);
-    return (
-          // TODO: Display the latest reservation information
-      <>
+  return (
+    // TODO: Display the latest reservation information
+    <>
       {!guest ? (
         <Wrapper>
           <p>Loading</p>
@@ -48,9 +48,9 @@ const Reservation = () => {
         </Wrapper>
       )}
     </>
-    
-        // STRETCH: add FE components to fetch/update/delete reservations
-    )
+
+    // STRETCH: add FE components to fetch/update/delete reservations
+  );
 };
 
 const Wrapper = styled.div`

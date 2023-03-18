@@ -16,6 +16,7 @@ const App = () => {
         const storedValue = window.localStorage.getItem("reservationId");
 
         return storedValue !== null ? JSON.parse(storedValue) : storedValue;
+        // return storedValue ? JSON.parse(storedValue) : storedValue;
     });
 
     const handleChange = (e) => {
