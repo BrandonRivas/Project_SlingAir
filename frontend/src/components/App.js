@@ -30,7 +30,7 @@ const App = () => {
                 <Routes>
                     <Route path="/" element={<SeatSelect selectedFlight={selectedFlight} setReservationId={setReservationId} />} />
                     <Route path="/confirmation/:_id" element={<Confirmation />} />
-                    <Route path="/reservation" element={<Reservation />} />
+                    <Route path="/reservation/:_id" element={<Reservation />} />
                     <Route path="" element={<h1>404: Oops!</h1>} />
                 </Routes>
                 <Footer />

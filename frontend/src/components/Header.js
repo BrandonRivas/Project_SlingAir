@@ -44,7 +44,7 @@ const Header = ({ handleChange, reservationId }) => {
         <>
           {/* TODO: only show link if the user has a reservation already */}
           {reservationId && (
-            <StyledNavLink to="/reservation">Reservation</StyledNavLink>
+            <StyledNavLink to={`/reservation/${reservationId}`}>Reservation</StyledNavLink>
           )}
         </>
       </Nav>

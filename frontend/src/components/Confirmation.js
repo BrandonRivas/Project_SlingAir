@@ -14,43 +14,72 @@ const Confirmation = () => {
         setGuest(data);
       });
   }, [_id]);
-  console.log(guest);
   return (
     <>
       {!guest ? (
-        <p>Loading</p>
+        <Wrapper>
+          <p>Loading</p>
+        </Wrapper>
       ) : (
         <Wrapper>
-          <div>
-            <p>You are confirmed! </p>
-            <p>
-              Reservation #: <span>{guest.data._id}</span>
-            </p>
-            <p>
-              Flight #: <span>{guest.data.flight}</span>
-            </p>
-            <p>
-              Seat #: <span>{guest.data.seat}</span>
-            </p>
-            <p>
-              Name:
-              <span>
+          <Div>
+            <Title>You are confirmed! </Title>
+            <P>
+              Reservation #: <Span>{guest.data._id}</Span>
+            </P>
+            <P>
+              Flight #: <Span>{guest.data.flight}</Span>
+            </P>
+            <P>
+              Seat #: <Span>{guest.data.seat}</Span>
+            </P>
+            <P>
+              Name:{" "}
+              <Span>
                 {guest.data.givenName} {guest.data.surname}
-              </span>
-            </p>
-            <p>Email: {guest.data.email}</p>
-            <IMG src={tombstone} alt="Tombstone" />
-          </div> 
+              </Span>
+            </P>
+            <P>
+              Email: <Span>{guest.data.email}</Span>
+            </P>
+          </Div>
+          <IMG src={tombstone} alt="Tombstone" />
         </Wrapper>
       )}
     </>
   );
 };
 
-const Wrapper = styled.div``;
+const Wrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding-top: 70px;
+  margin-bottom: 100px;
+`;
 
+const Div = styled.div`
+  border: 3px solid var(--color-cadmium-red);
+  border-radius: 10px;
+  padding: 30px;
+`;
+const Title = styled.p`
+  text-align: center;
+  margin-bottom: 30px;
+  font-size: 25px;
+`;
+const P = styled.p`
+  padding-bottom: 20px;
+  font-size: 18px;
+  font-weight: 900;
+`;
+const Span = styled.span`
+  font-weight: normal;
+`;
 const IMG = styled.img`
-width: 200px;
-`
+  width: 200px;
+  margin-top: 50px;
+`;
 
 export default Confirmation;

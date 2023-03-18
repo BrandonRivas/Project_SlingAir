@@ -31,6 +31,7 @@ const SeatSelect = ({ selectedFlight, setReservationId }) => {
       .then((data) => {
         // TODO: Save reservationId
         setReservationId(data.data.insertedId);
+        localStorage.setItem("reservationId", data.data.insertedId)
         // TODO: Redirect to confirmation page
         navigate(`/confirmation/${data.data.insertedId}`);
       })
