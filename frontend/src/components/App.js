@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Header from "./Header";
@@ -10,34 +10,43 @@ import Reservation from "./Reservation";
 import GlobalStyles from "./GlobalStyles";
 
 const App = () => {
+  const [selectedFlight, setSelectedFlight] = useState("");
+  const [reservationId, setReservationId] = useState(() => {
+    const storedValue = window.localStorage.getItem("reservationId");
+    return storedValue !== null ? JSON.parse(storedValue) : null;
+  });
 
-    const [selectedFlight, setSelectedFlight] = useState("");
-    const [reservationId, setReservationId] = useState(() => {
-        const storedValue = window.localStorage.getItem("reservationId");
+  useEffect(() => {
+    window.localStorage.setItem("reservationId", JSON.stringify(reservationId));
+  }, [reservationId]);
 
-        return storedValue !== null ? JSON.parse(storedValue) : storedValue;
-        // return storedValue ? JSON.parse(storedValue) : storedValue;
-    });
+  const handleChange = (e) => {
+    setSelectedFlight(e.target.value);
+  };
 
-    const handleChange = (e) => {
-        setSelectedFlight(e.target.value);
-    }
-
-    return (
-        <BrowserRouter>
-            <GlobalStyles />
-            <Header handleChange={handleChange} reservationId={reservationId} />
-            <Main>
-                <Routes>
-                    <Route path="/" element={<SeatSelect selectedFlight={selectedFlight} setReservationId={setReservationId} />} />
-                    <Route path="/confirmation/:_id" element={<Confirmation />} />
-                    <Route path="/reservation/:_id" element={<Reservation />} />
-                    <Route path="" element={<h1>404: Oops!</h1>} />
-                </Routes>
-                <Footer />
-            </Main>
-        </BrowserRouter>
-    );
+  return (
+    <BrowserRouter>
+      <GlobalStyles />
+      <Header handleChange={handleChange} reservationId={reservationId} />
+      <Main>
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <SeatSelect
+                selectedFlight={selectedFlight}
+                setReservationId={setReservationId}
+              />
+            }
+          />
+          <Route path="/confirmation/:_id" element={<Confirmation />} />
+          <Route path="/reservation/:_id" element={<Reservation />} />
+          <Route path="" element={<h1>404: Oops!</h1>} />
+        </Routes>
+        <Footer />
+      </Main>
+    </BrowserRouter>
+  );
 };
 
 const Main = styled.div`

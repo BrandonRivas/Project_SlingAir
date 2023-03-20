@@ -12,6 +12,9 @@ const Confirmation = () => {
       .then((response) => response.json())
       .then((data) => {
         setGuest(data);
+      })
+      .catch((error) => {
+        console.log(error);
       });
   }, [_id]);
   return (

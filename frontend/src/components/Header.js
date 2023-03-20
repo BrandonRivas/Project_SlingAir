@@ -9,7 +9,7 @@ const Header = ({ handleChange, reservationId }) => {
 
   // TODO: GET all flight numbers
   useEffect(() => {
-    fetch("api/get-flights")
+    fetch("/api/get-flights")
       .then((response) => response.json())
       .then((data) => {
         setFlightNumbers(data.data);
@@ -17,7 +17,7 @@ const Header = ({ handleChange, reservationId }) => {
       .catch((error) => {
         console.log(error);
       });
-  }, [setFlightNumbers]);
+  }, []);
 
   return (
     <Wrapper>

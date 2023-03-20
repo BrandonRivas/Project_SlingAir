@@ -29,7 +29,7 @@ const getFlights = async (request, response) => {
       return response.status(404).json({
         status: 404,
         data: result,
-        message: `Unable to retrieve flights`,
+        message: "Unable to retrieve  all flights",
       });
     }
   } catch (error) {
@@ -49,10 +49,15 @@ const getFlight = async (request, response) => {
     await client.connect();
     const db = client.db("Slingair");
     const result = await db.collection("flights").findOne({ flight });
-    // const result = await db.collection("flights").find({ flight }).toArray();
 
     result
-      ? response.status(200).json({ status: 200, data: result })
+      ? response
+          .status(200)
+          .json({
+            status: 200,
+            data: result,
+            message: "Found the flight you're looking for",
+          })
       : response
           .status(404)
           .json({ status: 404, data: result, message: "No flight Found" });
@@ -72,7 +77,13 @@ const getReservations = async (request, response) => {
     const db = client.db("Slingair");
     const result = await db.collection("reservations").find().toArray();
     result
-      ? response.status(200).json({ status: 200, data: result })
+      ? response
+          .status(200)
+          .json({
+            status: 200,
+            data: result,
+            message: "Found a list of all reservations",
+          })
       : response.status(404).json({
           status: 404,
           data: result,
@@ -97,7 +108,13 @@ const getSingleReservation = async (request, response) => {
     const result = await db.collection("reservations").findOne({ _id });
 
     result
-      ? response.status(200).json({ status: 200, data: result })
+      ? response
+          .status(200)
+          .json({
+            status: 200,
+            data: result,
+            message: "Found the reservation you were looking for",
+          })
       : response.status(404).json({
           status: 404,
           data: result,
@@ -142,7 +159,10 @@ const addReservation = async (request, response) => {
     if (!result.seats.find((seats) => seats.id === selectedSeat).isAvailable) {
       return response
         .status(400)
-        .json({ status: 400, message: "That selected seat is already reserved" });
+        .json({
+          status: 400,
+          message: "That selected seat is already reserved",
+        });
     }
 
     const data = await db.collection("reservations").insertOne({
@@ -163,7 +183,7 @@ const addReservation = async (request, response) => {
 
     return response
       .status(200)
-      .json({ status: 200, message: "Your booking has been created", data});
+      .json({ status: 200, message: "Your booking has been created", data });
   } catch (error) {
     console.log(error);
     response.status(500).json({ message: "Internal server error" });
@@ -184,8 +204,15 @@ const updateReservation = async (request, response) => {
     if (!reservation) {
       return response
         .status(404)
-        .json({ status: 404, message: "Reservation not found", data: reservation});
+        .json({
+          status: 404,
+          message: "Reservation not found",
+          data: reservation,
+        });
     }
+
+    // This will change the original form information if provided and if not, the original
+    // information will remain the same
     const updateObj = {};
     if (request.body.givenName) {
       updateObj.givenName = request.body.givenName;
@@ -201,7 +228,6 @@ const updateReservation = async (request, response) => {
     }
     if (request.body.selectedSeat) {
       updateObj.seat = request.body.selectedSeat.toUpperCase();
-      
 
       const query_flight = {
         _id: request.body.selectedFlight,
@@ -246,7 +272,9 @@ const updateReservation = async (request, response) => {
       }
     }
 
-    await db.collection("reservations").updateOne({ _id }, { $set: updateObj });
+    await db
+      .collection("reservations")
+      .updateOne({ _id }, { $set: updateObj });
 
     return response.status(200).json({
       status: 200,

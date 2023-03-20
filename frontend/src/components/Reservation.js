@@ -12,6 +12,9 @@ const Reservation = () => {
       .then((response) => response.json())
       .then((data) => {
         setGuest(data);
+      })
+      .catch((error) => {
+        console.log(error);
       });
   }, [_id]);
   return (
@@ -24,7 +27,7 @@ const Reservation = () => {
       ) : (
         <Wrapper>
           <Div>
-            <Title>You are confirmed! </Title>
+            <Title>Your Reservation </Title>
             <P>
               Reservation #: <Span>{guest.data._id}</Span>
             </P>
